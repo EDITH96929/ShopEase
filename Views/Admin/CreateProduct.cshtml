@@ -1,0 +1,102 @@
+﻿@using ShopEase.Models
+@model Product
+@{
+    ViewBag.Title = "Add Product";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    var categories = ViewBag.Categories as List<Category>;
+}
+
+<div style="max-width:600px;">
+    <a href="@Url.Action("Products")" class="text-muted text-decoration-none" style="font-size:0.88rem;">← Back to Products</a>
+    <h5 class="fw-bold mt-3 mb-4">Add New Product</h5>
+
+    <div class="p-4" style="background:#fff; border-radius:16px; border:1px solid #f0f0f0;">
+        @using (Html.BeginForm("CreateProduct", "Admin", FormMethod.Post,
+        new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold" style="font-size:0.88rem;">Product Name</label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "e.g. Wireless Headphones" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger", style = "font-size:0.8rem;" })
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold" style="font-size:0.88rem;">Category</label>
+                <select name="CategoryID" class="form-select">
+                    @if (categories != null)
+                    {
+                        foreach (var cat in categories)
+                        {
+                            <option value="@cat.CategoryID">@cat.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold" style="font-size:0.88rem;">Description</label>
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "3", placeholder = "Product description..." })
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-6">
+                    <label class="form-label fw-semibold" style="font-size:0.88rem;">Price ($)</label>
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", placeholder = "0.00", type = "number", step = "0.01", min = "0" })
+                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger", style = "font-size:0.8rem;" })
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold" style="font-size:0.88rem;">Stock</label>
+                    @Html.TextBoxFor(m => m.Stock, new { @class = "form-control", placeholder = "0", type = "number", min = "0" })
+                    @Html.ValidationMessageFor(m => m.Stock, "", new { @class = "text-danger", style = "font-size:0.8rem;" })
+                </div>
+            </div>
+
+            <!-- ✅ REPLACED IMAGE SECTION -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold" style="font-size:0.88rem;">
+                    Product Image
+                </label>
+
+                <div style="border:2px dashed #e0e0e0; border-radius:12px; padding:24px; text-align:center; cursor:pointer;"
+                     onclick="document.getElementById('imageFile').click()"
+                     id="dropzone">
+
+                    <div id="preview-wrap" style="display:none; margin-bottom:12px;">
+                        <img id="img-preview"
+                             style="max-height:140px; border-radius:10px; object-fit:cover;" />
+                    </div>
+
+                    <div id="drop-label">
+                        <div style="font-size:1.8rem; margin-bottom:8px;">📷</div>
+                        <div style="font-weight:600; font-size:0.9rem;">Click to upload image</div>
+                        <div style="font-size:0.78rem; color:#aaa; margin-top:4px;">JPG, PNG, WEBP supported</div>
+                    </div>
+
+                    <input type="file" name="imageFile" id="imageFile"
+                           accept="image/*" style="display:none;"
+                           onchange="previewImage(this)" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark px-4">Add Product</button>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('img-preview').src = e.target.result;
+                document.getElementById('preview-wrap').style.display = 'block';
+                document.getElementById('drop-label').style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    </script>
+}

@@ -1,0 +1,30 @@
+﻿@using ShopEase.Models
+@model List<Category>
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+
+<h5 class="fw-bold mb-4">Categories</h5>
+
+<div class="admin-table" style="max-width:500px;">
+    <table class="table table-borderless mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cat in Model)
+            {
+                <tr>
+                    <td style="color:#aaa;">@cat.CategoryID</td>
+                    <td class="fw-semibold">@cat.Name</td>
+                    <td style="color:#888; font-size:0.88rem;">@cat.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

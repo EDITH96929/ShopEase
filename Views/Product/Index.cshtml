@@ -1,0 +1,91 @@
+﻿@using ShopEase.Models
+@model List<Product>
+@{
+    ViewBag.Title = "Products";
+    var categories = ViewBag.Categories as List<Category>;
+}
+
+<div class="container my-5">
+    <div class="row">
+
+        <!-- Sidebar filters -->
+        <div class="col-md-3">
+            <h6 class="fw-bold mb-3">Categories</h6>
+            <ul class="list-unstyled">
+                <li class="mb-1">
+                    <a href="@Url.Action("Index")" class="text-decoration-none @(ViewBag.SelectedCat == null ? "fw-bold text-dark" : "text-muted")">All Products</a>
+                </li>
+                @if (categories != null)
+                {
+                    foreach (var cat in categories)
+                    {
+                        <li class="mb-1">
+                            <a href="@Url.Action("Index", new { categoryID = cat.CategoryID })"
+                               class="text-decoration-none @(ViewBag.SelectedCat != null && (int)ViewBag.SelectedCat == cat.CategoryID ? "fw-bold text-dark" : "text-muted")">
+                                @cat.Name
+                            </a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-9">
+            <!-- Search + Sort bar -->
+            <form method="get" action="@Url.Action("Index")">
+                @if (ViewBag.SelectedCat != null)
+                {
+                    <input type="hidden" name="categoryID" value="@ViewBag.SelectedCat" />
+                }
+                <div class="d-flex gap-2 mb-4">
+                    <input type="text" name="search" value="@ViewBag.Search" placeholder="Search products..."
+                           class="form-control" style="border-radius:8px; border:1px solid #e0e0e0;" />
+                    <select name="sort" class="form-select" style="max-width:180px; border-radius:8px; border:1px solid #e0e0e0;">
+                        <option value="" @(ViewBag.Sort == null ? "selected" : "")>Latest</option>
+                        <option value="price_asc" @(ViewBag.Sort == "price_asc" ? "selected" : "")>Price: Low → High</option>
+                        <option value="price_desc" @(ViewBag.Sort == "price_desc" ? "selected" : "")>Price: High → Low</option>
+                        <option value="name" @(ViewBag.Sort == "name" ? "selected" : "")>Name A–Z</option>
+                    </select>
+                    <button type="submit" class="btn btn-dark px-4">Go</button>
+                </div>
+            </form>
+
+            <!-- Results count -->
+            <p class="text-muted mb-3" style="font-size:0.88rem;">@Model.Count product(s) found</p>
+
+            <!-- Product grid -->
+            @if (Model.Count == 0)
+            {
+                <div class="text-center py-5 text-muted">
+                    <p>No products found.</p>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-dark btn-sm">Clear filters</a>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var p in Model)
+                    {
+                        <div class="col-6 col-md-4">
+                            <a href="@Url.Action("Detail", new { id = p.ProductID })" class="text-decoration-none text-dark">
+                                <div class="product-card">
+                                    <img src="@p.ImageURL" alt="@p.Name" />
+                                    <div class="card-body">
+                                        <div class="category-badge mb-1">@p.CategoryName</div>
+                                        <div class="fw-semibold mt-1" style="font-size:0.95rem;">@p.Name</div>
+                                        <div class="price mt-1">$@p.Price.ToString("0.00")</div>
+                                        @if (p.Stock == 0)
+                                        {
+                                            <span class="text-danger" style="font-size:0.78rem;">Out of stock</span>
+                                        }
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

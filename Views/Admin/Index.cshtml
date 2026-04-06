@@ -1,0 +1,84 @@
+﻿@using ShopEase.Models
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    var recentOrders = ViewBag.RecentOrders as List<Order>;
+}
+
+<h5 class="fw-bold mb-4">Dashboard</h5>
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="label">Revenue</div>
+            <div class="value">$@((decimal)ViewBag.TotalRevenue).ToString("0")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="label">Orders</div>
+            <div class="value">@ViewBag.TotalOrders</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="label">Products</div>
+            <div class="value">@ViewBag.TotalProducts</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <div class="label">Customers</div>
+            <div class="value">@ViewBag.TotalUsers</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent orders -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold mb-0">Recent Orders</h6>
+    <a href="@Url.Action("Orders","Admin")" class="text-muted text-decoration-none" style="font-size:0.85rem;">View all →</a>
+</div>
+
+<div class="admin-table">
+    <table class="table table-borderless mb-0">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (recentOrders != null)
+            {
+                foreach (var order in recentOrders)
+                {
+                    string[] parts = order.ShipAddress.Split(new string[] { "||" }, System.StringSplitOptions.None);
+                    string customerName = parts.Length > 0 ? parts[0] : "—";
+
+                    string bg = order.Status == "Delivered" ? "#e8f5e9" :
+                                order.Status == "Shipped" ? "#e3f2fd" :
+                                order.Status == "Cancelled" ? "#ffebee" : "#fff3e0";
+                    string fg = order.Status == "Delivered" ? "#2e7d32" :
+                                order.Status == "Shipped" ? "#1565c0" :
+                                order.Status == "Cancelled" ? "#c62828" : "#e65100";
+                    <tr>
+                        <td><span style="font-weight:600;">#@order.OrderID</span></td>
+                        <td>@customerName</td>
+                        <td>$@order.TotalAmount.ToString("0.00")</td>
+                        <td>
+                            <span class="badge-status" style="background:@bg; color:@fg;">
+                                @order.Status
+                            </span>
+                        </td>
+                        <td style="color:#888;">@order.CreatedAt.ToString("MMM dd, yyyy")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

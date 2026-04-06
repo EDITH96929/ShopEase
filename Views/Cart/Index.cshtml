@@ -1,0 +1,90 @@
+﻿@using ShopEase.Models
+@model List<CartItem>
+@{ ViewBag.Title = "Your Cart"; }
+
+<div class="container my-5">
+    <h4 class="fw-bold mb-4">Your Cart</h4>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success py-2" style="font-size:0.88rem;">@TempData["Success"]</div>
+    }
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="text-center py-5 text-muted">
+            <p style="font-size:1.1rem;">Your cart is empty.</p>
+            <a href="@Url.Action("Index","Product")" class="btn btn-dark mt-2">Continue Shopping</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <!-- Cart items -->
+            <div class="col-md-8">
+                @foreach (var item in Model)
+                {
+                    <div class="d-flex gap-3 align-items-center p-3 mb-3"
+                         style="border:1px solid #f0f0f0; border-radius:12px;">
+                        <img src="@item.ImageURL" alt="@item.ProductName"
+                             style="width:80px; height:80px; object-fit:cover; border-radius:8px; background:#f5f5f5;" />
+
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">@item.ProductName</div>
+                            <div class="text-muted" style="font-size:0.88rem;">$@item.Price.ToString("0.00") each</div>
+                        </div>
+
+                        <!-- Update quantity form -->
+                        @using (Html.BeginForm("Update", "Cart", FormMethod.Post, new { @class = "d-flex align-items-center gap-2" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="cartItemID" value="@item.CartItemID" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" max="99"
+                                   class="form-control form-control-sm" style="width:65px; border-radius:8px;" />
+                            <button type="submit" class="btn btn-outline-dark btn-sm">Update</button>
+                        }
+
+                        <!-- Remove form -->
+                        @using (Html.BeginForm("Remove", "Cart", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="cartItemID" value="@item.CartItemID" />
+                            <button type="submit" class="btn btn-sm text-danger border-0"
+                                    onclick="return confirm('Remove this item?')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        }
+
+                        <div class="fw-bold" style="min-width:70px; text-align:right;">
+                            $@item.Subtotal.ToString("0.00")
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Order summary -->
+            <div class="col-md-4">
+                <div class="p-4" style="background:#f9f9f9; border-radius:16px;">
+                    <h6 class="fw-bold mb-3">Order Summary</h6>
+                    <div class="d-flex justify-content-between mb-2" style="font-size:0.9rem;">
+                        <span class="text-muted">Subtotal</span>
+                        <span>$@Model.Sum(i => i.Subtotal).ToString("0.00")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2" style="font-size:0.9rem;">
+                        <span class="text-muted">Shipping</span>
+                        <span class="text-success">Free</span>
+                    </div>
+                    <hr style="border-color:#e8e8e8;" />
+                    <div class="d-flex justify-content-between fw-bold mb-4">
+                        <span>Total</span>
+                        <span>$@Model.Sum(i => i.Subtotal).ToString("0.00")</span>
+                    </div>
+                    <a href="@Url.Action("Checkout","Order")"
+                       class="btn btn-dark w-100 py-2">Proceed to Checkout</a>
+                    <a href="@Url.Action("Index","Product")"
+                       class="btn btn-outline-dark w-100 py-2 mt-2">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,37 @@
+﻿@model ShopEase.Models.ViewModels.LoginViewModel
+@{ ViewBag.Title = "Login"; }
+
+<div class="container my-5" style="max-width:420px;">
+    <h3 class="fw-bold mb-1">Welcome back</h3>
+    <p class="text-muted mb-4" style="font-size:0.9rem;">Sign in to your ShopEase account</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success py-2" style="font-size:0.88rem;">@TempData["Success"]</div>
+    }
+
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Email, new { @class = "form-label fw-semibold", style = "font-size:0.88rem;" })
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "you@example.com" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger", style = "font-size:0.8rem;" })
+        </div>
+
+        <div class="mb-4">
+            @Html.LabelFor(m => m.Password, new { @class = "form-label fw-semibold", style = "font-size:0.88rem;" })
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "••••••••" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger", style = "font-size:0.8rem;" })
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger", style = "font-size:0.85rem;" })
+
+        <button type="submit" class="btn btn-dark w-100 py-2">Sign In</button>
+    }
+
+    <p class="text-center text-muted mt-4" style="font-size:0.88rem;">
+        Don't have an account? <a href="@Url.Action("Register")" class="text-dark fw-semibold">Sign up</a>
+    </p>
+</div>

@@ -1,0 +1,66 @@
+﻿@using ShopEase.Models
+@model List<Product>
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Products</h5>
+    <a href="@Url.Action("CreateProduct")" class="btn btn-dark btn-sm px-3">
+        + Add Product
+    </a>
+</div>
+
+<div class="admin-table">
+    <table class="table table-borderless mb-0">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@p.ImageURL" style="width:44px; height:44px; object-fit:cover; border-radius:8px; background:#f5f5f5;" />
+                    </td>
+                    <td><span class="fw-semibold">@p.Name</span></td>
+                    <td style="color:#888;">@p.CategoryName</td>
+                    <td>$@p.Price.ToString("0.00")</td>
+                    <td>
+                        @if (p.Stock == 0)
+                        {
+                            <span style="color:#c62828; font-size:0.85rem;">Out of stock</span>
+                        }
+                        else
+                        {
+                            <span>@p.Stock</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("EditProduct", new { id = p.ProductID })"
+                           class="btn btn-outline-dark btn-sm me-1">Edit</a>
+
+                        @using (Html.BeginForm("DeleteProduct", "Admin", FormMethod.Post, new { style = "display:inline;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@p.ProductID" />
+                            <button type="submit" class="btn btn-sm"
+                                    style="border:1px solid #ffcdd2; color:#c62828; border-radius:8px;"
+                                    onclick="return confirm('Delete @p.Name?')">
+                                Delete
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

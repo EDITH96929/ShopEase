@@ -1,0 +1,52 @@
+﻿@model ShopEase.Models.Order
+@{ ViewBag.Title = "Order #" + Model.OrderID; }
+
+<div class="container my-5" style="max-width:680px;">
+    <a href="@Url.Action("History","Order")" class="text-muted text-decoration-none"
+       style="font-size:0.88rem;">← Back to Orders</a>
+
+    <h4 class="fw-bold mt-3 mb-4">Order #@Model.OrderID</h4>
+
+    <div class="p-4 mb-4" style="border:1px solid #f0f0f0; border-radius:16px;">
+        <div class="row g-3" style="font-size:0.88rem;">
+            <div class="col-6">
+                <div class="text-muted">Date</div>
+                <div class="fw-semibold">@Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</div>
+            </div>
+            <div class="col-6">
+                <div class="text-muted">Status</div>
+                <div class="fw-semibold">@Model.Status</div>
+            </div>
+            <div class="col-12">
+                <div class="text-muted">Shipped to</div>
+                <div class="fw-semibold">@Model.ShipAddress</div>
+            </div>
+        </div>
+    </div>
+
+    <h6 class="fw-bold mb-3">Items</h6>
+    @if (Model.Items != null)
+    {
+        foreach (var item in Model.Items)
+        {
+            <div class="d-flex align-items-center gap-3 mb-3 p-3"
+                 style="border:1px solid #f5f5f5; border-radius:12px;">
+                <img src="@item.ImageURL"
+                     style="width:60px; height:60px; object-fit:cover; border-radius:8px; background:#f5f5f5;" />
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">@item.ProductName</div>
+                    <div class="text-muted" style="font-size:0.82rem;">
+                        @item.Quantity × $@item.UnitPrice.ToString("0.00")
+                    </div>
+                </div>
+                <div class="fw-bold">$@((item.Quantity * item.UnitPrice).ToString("0.00"))</div>
+            </div>
+        }
+
+        <div class="d-flex justify-content-between fw-bold p-3 mt-2"
+             style="background:#f9f9f9; border-radius:12px;">
+            <span>Total</span>
+            <span>$@Model.TotalAmount.ToString("0.00")</span>
+        </div>
+    }
+</div>

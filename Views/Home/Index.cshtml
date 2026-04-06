@@ -1,0 +1,458 @@
+﻿@using ShopEase.Models
+@{
+    ViewBag.Title = "Home";
+    var featured = ViewBag.FeaturedProducts as List<Product>;
+    var categories = ViewBag.Categories as List<Category>;
+}
+
+<style>
+    .hero-section {
+        min-height: 88vh;
+        display: flex;
+        align-items: center;
+        background: #f7f5f0;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-tag {
+        display: inline-block;
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 0.72rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 20px;
+        margin-bottom: 24px;
+    }
+    .hero-title {
+        font-size: clamp(2.8rem, 6vw, 5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -2px;
+        color: #1a1a1a;
+    }
+    .hero-title span {
+        color: transparent;
+        -webkit-text-stroke: 2px #1a1a1a;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+        color: #777;
+        max-width: 400px;
+        line-height: 1.7;
+        margin: 20px 0 36px;
+    }
+    .btn-hero-primary {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 14px 36px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.2s, background 0.2s;
+    }
+    .btn-hero-primary:hover {
+        background: #333;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+    .btn-hero-secondary {
+        color: #1a1a1a;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        border: 1.5px solid #ddd;
+        margin-left: 12px;
+        transition: border-color 0.2s;
+    }
+    .btn-hero-secondary:hover {
+        border-color: #1a1a1a;
+        color: #1a1a1a;
+    }
+    .hero-visual {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hero-blob {
+        width: 440px;
+        height: 440px;
+        background: #e8e4dc;
+        border-radius: 60% 40% 55% 45% / 50% 45% 55% 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .hero-blob img {
+        width: 320px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    .hero-float-card {
+        position: absolute;
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        font-size: 0.82rem;
+    }
+    .hero-float-card.top-right {
+        top: 30px;
+        right: -10px;
+    }
+    .hero-float-card.bottom-left {
+        bottom: 40px;
+        left: -20px;
+    }
+    .hero-stat {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1;
+    }
+    .hero-stat-label {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 2px;
+    }
+
+    /* Category pills */
+    .cat-pill {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        text-decoration: none;
+        color: #1a1a1a;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .cat-pill:hover {
+        border-color: #1a1a1a;
+        transform: translateY(-2px);
+        color: #1a1a1a;
+    }
+    .cat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    /* Product cards — upgraded */
+    .pcard {
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        transition: all 0.25s;
+        position: relative;
+    }
+    .pcard:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+        border-color: transparent;
+    }
+    .pcard-img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        background: #f5f5f5;
+        display: block;
+    }
+    .pcard-body {
+        padding: 18px;
+    }
+    .pcard-cat {
+        font-size: 0.72rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .pcard-name {
+        font-weight: 700;
+        font-size: 0.97rem;
+        margin: 6px 0 4px;
+        color: #1a1a1a;
+    }
+    .pcard-price {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    .pcard-btn {
+        position: absolute;
+        bottom: 18px;
+        right: 18px;
+        width: 36px;
+        height: 36px;
+        background: #1a1a1a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-decoration: none;
+        font-size: 1rem;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s;
+    }
+    .pcard:hover .pcard-btn {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Marquee ticker */
+    .ticker-wrap {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 14px 0;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .ticker-track {
+        display: inline-block;
+        animation: ticker 20s linear infinite;
+    }
+    .ticker-item {
+        display: inline-block;
+        margin: 0 40px;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    .ticker-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background: #666;
+        border-radius: 50%;
+        vertical-align: middle;
+        margin: 0 20px;
+    }
+    @*@keyframes ticker {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }*@
+
+    /* Banner strip */
+    .promo-strip {
+        background: #f0ebe3;
+        border-radius: 24px;
+        padding: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+</style>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-tag">✦ New arrivals 2025</div>
+                <h1 class="hero-title">
+                    Discover<br>
+                    Products<br>
+                    <span>You Love</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Curated quality. Honest prices. Fast checkout.
+                    Everything you need, nothing you don't.
+                </p>
+                <div>
+                    <a href="@Url.Action("Index","Product")" class="btn-hero-primary">Shop Now</a>
+                    <a href="@Url.Action("Index","Product")" class="btn-hero-secondary">View All →</a>
+                </div>
+
+                <!-- Trust bar -->
+                <div class="d-flex gap-4 mt-5" style="flex-wrap:wrap;">
+                    <div>
+                        <div style="font-weight:700; font-size:1.1rem;">500+</div>
+                        <div style="font-size:0.78rem; color:#888;">Products</div>
+                    </div>
+                    <div style="width:1px; background:#e0e0e0;"></div>
+                    <div>
+                        <div style="font-weight:700; font-size:1.1rem;">10k+</div>
+                        <div style="font-size:0.78rem; color:#888;">Happy Customers</div>
+                    </div>
+                    <div style="width:1px; background:#e0e0e0;"></div>
+                    <div>
+                        <div style="font-weight:700; font-size:1.1rem;">Free</div>
+                        <div style="font-size:0.78rem; color:#888;">Shipping</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-visual">
+                    <div class="hero-blob">
+                        <img src="@Url.Content("~/Images/hero-product.jpg")" alt="Featured Product" />
+                    </div>
+
+                    <!-- Floating cards -->
+                    <div class="hero-float-card top-right">
+                        <div class="hero-stat">★ 4.9</div>
+                        <div class="hero-stat-label">Customer Rating</div>
+                    </div>
+                    <div class="hero-float-card bottom-left">
+                        <div class="hero-stat">🚚 Free</div>
+                        <div class="hero-stat-label">Shipping Always</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+    <div class="ticker-track">
+        @for (int i = 0; i < 2; i++)
+        {
+            <span class="ticker-item">Free Shipping on All Orders</span>
+            <span class="ticker-dot"></span>
+            <span class="ticker-item">New Arrivals Every Week</span>
+            <span class="ticker-dot"></span>
+            <span class="ticker-item">Easy Returns</span>
+            <span class="ticker-dot"></span>
+            <span class="ticker-item">Secure Checkout</span>
+            <span class="ticker-dot"></span>
+            <span class="ticker-item">Quality Guaranteed</span>
+            <span class="ticker-dot"></span>
+        }
+    </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="container my-6" style="margin-top:80px; margin-bottom:80px;">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <p style="font-size:0.78rem; letter-spacing:2px; text-transform:uppercase; color:#999; margin-bottom:6px;">Browse</p>
+            <h2 style="font-weight:800; font-size:1.8rem; letter-spacing:-0.5px; margin:0;">Shop by Category</h2>
+        </div>
+        <a href="@Url.Action("Index","Product")" style="color:#999; font-size:0.88rem; text-decoration:none;">All products →</a>
+    </div>
+
+    <div class="row g-3">
+        @if (categories != null)
+        {
+            string[] icons = { "💻", "👕", "📚", "🏠", "🎮", "📷" };
+            string[] colors = { "#fef3e2", "#e8f4fd", "#f3e8ff", "#e8fdf3", "#fde8e8", "#e8edf5" };
+            int ci = 0;
+            foreach (var cat in categories)
+            {
+                string ic = ci < icons.Length ? icons[ci] : "🛍";
+                string col = ci < colors.Length ? colors[ci] : "#f5f5f5";
+                ci++;
+                <div class="col-6 col-md-3">
+                    <a href="@Url.Action("Index","Product", new { categoryID = cat.CategoryID })"
+                       class="cat-pill">
+                        <div class="cat-icon" style="background:@col;">@ic</div>
+                        <div>
+                            <div style="font-weight:600; font-size:0.92rem;">@cat.Name</div>
+                            <div style="font-size:0.75rem; color:#999;">@cat.Description</div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section style="background:#fafafa; padding:80px 0;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <p style="font-size:0.78rem; letter-spacing:2px; text-transform:uppercase; color:#999; margin-bottom:6px;">Handpicked</p>
+                <h2 style="font-weight:800; font-size:1.8rem; letter-spacing:-0.5px; margin:0;">Featured Products</h2>
+            </div>
+            <a href="@Url.Action("Index","Product")"
+               style="color:#999; font-size:0.88rem; text-decoration:none;">View all →</a>
+        </div>
+
+        <div class="row g-4">
+            @if (featured != null)
+            {
+                foreach (var p in featured)
+                {
+                    <div class="col-6 col-md-3">
+                        <div class="pcard">
+                            <img class="pcard-img" src="@p.ImageURL" alt="@p.Name" />
+                            <div class="pcard-body">
+                                <div class="pcard-cat">@p.CategoryName</div>
+                                <div class="pcard-name">@p.Name</div>
+                                <div class="pcard-price">$@p.Price.ToString("0.00")</div>
+                            </div>
+                            <a href="@Url.Action("Detail","Product", new { id = p.ProductID })"
+                               class="pcard-btn" title="View Product">→</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<!-- PROMO STRIP -->
+<section class="container" style="margin:80px auto;">
+    <div class="promo-strip">
+        <div>
+            <p style="font-size:0.78rem; letter-spacing:2px; text-transform:uppercase; color:#888; margin-bottom:8px;">Limited time</p>
+            <h3 style="font-weight:800; font-size:2rem; letter-spacing:-0.5px; margin-bottom:12px;">
+                Free Shipping<br>on Every Order
+            </h3>
+            <p style="color:#777; margin-bottom:24px; max-width:360px;">
+                No minimum spend. No hidden fees. Just great products delivered straight to your door.
+            </p>
+            <a href="@Url.Action("Index","Product")" class="btn-hero-primary">Start Shopping</a>
+        </div>
+        <div style="font-size:6rem; opacity:0.15; user-select:none;">🚚</div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section class="container" style="margin-bottom:80px;">
+    <div class="row g-4 text-center">
+        <div class="col-6 col-md-3">
+            <div style="font-size:1.8rem; margin-bottom:12px;">🚚</div>
+            <div style="font-weight:700; font-size:0.95rem;">Free Shipping</div>
+            <div style="font-size:0.82rem; color:#999; margin-top:4px;">On all orders, always</div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div style="font-size:1.8rem; margin-bottom:12px;">🔒</div>
+            <div style="font-weight:700; font-size:0.95rem;">Secure Checkout</div>
+            <div style="font-size:0.82rem; color:#999; margin-top:4px;">Your data is safe</div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div style="font-size:1.8rem; margin-bottom:12px;">↩️</div>
+            <div style="font-weight:700; font-size:0.95rem;">Easy Returns</div>
+            <div style="font-size:0.82rem; color:#999; margin-top:4px;">30-day return policy</div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div style="font-size:1.8rem; margin-bottom:12px;">💬</div>
+            <div style="font-weight:700; font-size:0.95rem;">24/7 Support</div>
+            <div style="font-size:0.82rem; color:#999; margin-top:4px;">Always here to help</div>
+        </div>
+    </div>
+</section>

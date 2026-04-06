@@ -1,0 +1,63 @@
+﻿@using ShopEase.Models
+@model List<Order>
+@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+
+<h5 class="fw-bold mb-4">All Orders</h5>
+
+<div class="admin-table">
+    <table class="table table-borderless mb-0">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                string[] parts = order.ShipAddress.Split(new string[] { "||" }, System.StringSplitOptions.None);
+                string customerName = parts.Length > 0 ? parts[0] : "—";
+
+                string bg = order.Status == "Delivered" ? "#e8f5e9" :
+                            order.Status == "Shipped" ? "#e3f2fd" :
+                            order.Status == "Cancelled" ? "#ffebee" : "#fff3e0";
+                string fg = order.Status == "Delivered" ? "#2e7d32" :
+                            order.Status == "Shipped" ? "#1565c0" :
+                            order.Status == "Cancelled" ? "#c62828" : "#e65100";
+                <tr>
+                    <td><span class="fw-semibold">#@order.OrderID</span></td>
+                    <td>@customerName</td>
+                    <td>$@order.TotalAmount.ToString("0.00")</td>
+                    <td style="color:#888; font-size:0.85rem;">@order.CreatedAt.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <span class="badge-status" style="background:@bg; color:@fg;">
+                            @order.Status
+                        </span>
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("UpdateOrderStatus", "Admin", FormMethod.Post, new { style = "display:flex; gap:6px;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="orderID" value="@order.OrderID" />
+                            <select name="status" class="form-select form-select-sm" style="width:130px; border-radius:8px;">
+                                <option value="Pending" @(order.Status == "Pending" ? "selected" : "")>Pending</option>
+                                <option value="Processing" @(order.Status == "Processing" ? "selected" : "")>Processing</option>
+                                <option value="Shipped" @(order.Status == "Shipped" ? "selected" : "")>Shipped</option>
+                                <option value="Delivered" @(order.Status == "Delivered" ? "selected" : "")>Delivered</option>
+                                <option value="Cancelled" @(order.Status == "Cancelled" ? "selected" : "")>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-dark btn-sm px-3">Save</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

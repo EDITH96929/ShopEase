@@ -1,0 +1,77 @@
+﻿@using ShopEase.Models
+@model Product
+@{
+    ViewBag.Title = Model.Name;
+    var related = ViewBag.Related as List<Product>;
+}
+
+<div class="container my-5">
+    <div class="row g-5">
+
+        <!-- Product image -->
+        <div class="col-md-5">
+            <img src="@Model.ImageURL" alt="@Model.Name"
+                 style="width:100%; border-radius:16px; background:#f5f5f5;" />
+        </div>
+
+        <!-- Product info -->
+        <div class="col-md-7">
+            <span class="category-badge">@Model.CategoryName</span>
+            <h2 class="mt-2" style="font-weight:700; letter-spacing:-0.5px;">@Model.Name</h2>
+            <p class="text-muted mt-2">@Model.Description</p>
+            <div style="font-size:1.8rem; font-weight:700; margin:20px 0;">$@Model.Price.ToString("0.00")</div>
+
+            @if (Model.Stock > 0)
+            {
+                <p class="text-success" style="font-size:0.88rem;"><i class="bi bi-check-circle"></i> In Stock (@Model.Stock available)</p>
+
+                if (Session["UserID"] != null)
+                {
+                    <form action="@Url.Action("Add","Cart")" method="post" class="d-flex gap-2 mt-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productID" value="@Model.ProductID" />
+                        <input type="number" name="quantity" value="1" min="1" max="@Model.Stock"
+                               class="form-control" style="width:80px; border-radius:8px;" />
+                        <button type="submit" class="btn btn-dark px-4">
+                            <i class="bi bi-bag-plus"></i> Add to Cart
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a href="@Url.Action("Login","Account")" class="btn btn-dark px-4 mt-3">
+                        Login to Add to Cart
+                    </a>
+                }
+            }
+            else
+            {
+                <p class="text-danger mt-3"><i class="bi bi-x-circle"></i> Out of Stock</p>
+            }
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (related != null && related.Count > 0)
+    {
+        <div class="mt-5">
+            <h5 class="fw-bold mb-4">You might also like</h5>
+            <div class="row g-4">
+                @foreach (var p in related)
+                {
+                    <div class="col-6 col-md-3">
+                        <a href="@Url.Action("Detail", new { id = p.ProductID })" class="text-decoration-none text-dark">
+                            <div class="product-card">
+                                <img src="@p.ImageURL" alt="@p.Name" />
+                                <div class="card-body">
+                                    <div class="fw-semibold" style="font-size:0.9rem;">@p.Name</div>
+                                    <div class="price">$@p.Price.ToString("0.00")</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
