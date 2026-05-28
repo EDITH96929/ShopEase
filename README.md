@@ -4,13 +4,3 @@ A modern ASP.NET MVC e-commerce web application with product management, categor
 
 🚀 Features
 
-👤 User Features
-
-User Registration & Login
-Browse Products by Categories
-Product Search & Details
-Add to Cart
-Update Cart Quantity
-Place Orders
-Order History
-Responsive UI Design
